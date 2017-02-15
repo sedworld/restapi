@@ -19,12 +19,11 @@ public class ReposLocalDataSource extends BaseLocalDataSource implements ReposDa
         return Single.just(listRepos);
     }
 
-
     @Override
     public Single<List<Repo>> getRepos(String user) {
         return Single.create(subscriber -> {
             realm.executeTransaction(innerRealm -> {
-                RealmResults<Repo> results = innerRealm.where(Repo.class).contains("name", user).findAll();
+                RealmResults<Repo> results = innerRealm.where(Repo.class).equalTo("name", user).findAll();
                 if (results == null) {
                     subscriber.onError(new Exception("vse ploho"));
                 } else {

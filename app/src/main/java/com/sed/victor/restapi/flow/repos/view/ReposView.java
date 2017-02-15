@@ -2,6 +2,8 @@ package com.sed.victor.restapi.flow.repos.view;
 
 import android.content.Context;
 
+import com.sed.victor.restapi.model.Repo;
+
 import java.util.List;
 
 import rx.Single;
@@ -13,5 +15,5 @@ import rx.Single;
 public interface ReposView {
     Context getContext();
 
-    void showRepos(List list);
+    void showRepos(List<Repo> list);
 }

@@ -4,14 +4,17 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
+import com.sed.victor.restapi.adapters.ReposAdapter;
 import com.sed.victor.restapi.flow.repos.view.ReposPresenter;
 import com.sed.victor.restapi.flow.repos.view.ReposView;
+import com.sed.victor.restapi.model.Repo;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -22,10 +25,12 @@ import rx.android.schedulers.AndroidSchedulers;
 public class MainActivity extends AppCompatActivity implements ReposView {
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private ReposAdapter mAdapter = new ReposAdapter();
     private RecyclerView.LayoutManager mLayoutManager;
 
     ReposPresenter reposPresenter = new ReposPresenter();
+
+    String test = null;
 
 
     @Override
@@ -35,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements ReposView {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        mLayoutManager = new LinearLayoutManager(this);
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -51,7 +57,9 @@ public class MainActivity extends AppCompatActivity implements ReposView {
         SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setQueryHint("Search...");
-        RxSearchView.queryTextChanges(searchView).debounce(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread()).subscribe(user_query ->
+        RxSearchView.queryTextChanges(searchView)
+                .debounce(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
+                .subscribe(user_query ->
                 reposPresenter.getRepos(user_query.toString()));
 
 
@@ -78,8 +86,8 @@ public class MainActivity extends AppCompatActivity implements ReposView {
     }
 
     @Override
-    public void showRepos(List list) {
-
+    public void showRepos(List<Repo> list) {
+        mAdapter.setDataSource(list);
     }
 
     @Override
