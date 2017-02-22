@@ -25,7 +25,10 @@ public abstract class BaseRemoteDataSource implements BaseDataSource{
     public void init(Context context) {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+        OkHttpClient client = new OkHttpClient.Builder()
+                //.addNetworkInterceptor(new StethoInterceptor())
+                .addInterceptor(interceptor)
+                .build();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(NEWS_ENDPOINT)
